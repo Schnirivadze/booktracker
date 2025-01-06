@@ -2,8 +2,6 @@
 
 A simple application for managing personal book collections. BookTracker allows users to organize books into shelves and shelf groups, track their locations, and search through their collections.
 
----
-
 ## Features
 
 - **User Authentication**: Secure login and registration system.
@@ -11,8 +9,6 @@ A simple application for managing personal book collections. BookTracker allows 
 - **Shelf Organization**: Organize books into shelves and groups.
 - **ISBN Lookup (Planned)**: Automatically fetch book details using an ISBN lookup API.
 - **Responsive Design**: User-friendly interface for managing collections.
-
----
 
 ## Technologies Used
 
