@@ -1,18 +1,13 @@
 package dev.andriiseleznov.java_book_tracker_backend.Book;
 
-import dev.andriiseleznov.java_book_tracker_backend.Shelf.Shelf;
-
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -43,7 +38,85 @@ public class Book {
     @Column(name = "position_y", nullable = false)
     private Integer y;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "shelf_id",referencedColumnName = "id")
-    private Shelf shelf;
+    @Column(name = "shelf_id", nullable = false)
+    private Long shelfId;
+
+    public Book() {
+    }
+
+    public Book(String title, String author, String description, List<String> tags, Integer x, Integer y,
+            Long shelfId) {
+        this.title = title;
+        this.author = author;
+        this.description = description;
+        this.tags = tags;
+        this.x = x;
+        this.y = y;
+        this.shelfId = shelfId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public Integer getX() {
+        return x;
+    }
+
+    public void setX(Integer x) {
+        this.x = x;
+    }
+
+    public Integer getY() {
+        return y;
+    }
+
+    public void setY(Integer y) {
+        this.y = y;
+    }
+
+    public Long getShelfId() {
+        return shelfId;
+    }
+
+    public void setShelfId(Long shelfId) {
+        this.shelfId = shelfId;
+    }
+
 }
