@@ -39,6 +39,7 @@ public class UserService {
         existingUser.setPassword(updatedUser.getPassword());
         existingUser.setName(updatedUser.getName());
         existingUser.setEmail(updatedUser.getEmail());
+        existingUser.setShelfGroupIds(updatedUser.getShelfGroupIds());
 
         userRepository.save(existingUser);
     }
@@ -59,4 +60,5 @@ public class UserService {
 
         return Optional.empty();
     }
+
 }

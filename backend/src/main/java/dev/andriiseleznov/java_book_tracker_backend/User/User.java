@@ -1,16 +1,16 @@
 package dev.andriiseleznov.java_book_tracker_backend.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import dev.andriiseleznov.java_book_tracker_backend.ShelfGroup.ShelfGroup;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -34,9 +34,10 @@ public class User {
     @Column(name = "email", unique = true, nullable = true)
     private String email;
 
-    @ManyToMany
-    @JoinTable(name = "shelf_groups_users", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "shelf_group_id"))
-    private List<ShelfGroup> shelfGroups;
+    @ElementCollection
+    @CollectionTable(name = "user_shelf_group_ids", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "shelf_group_id")
+    private List<Long> shelfGroupIds = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -78,12 +79,12 @@ public class User {
         this.email = email;
     }
 
-    public List<ShelfGroup> getShelfGroups() {
-        return shelfGroups;
+    public List<Long> getShelfGroupIds() {
+        return shelfGroupIds;
     }
 
-    public void setShelfGroups(List<ShelfGroup> shelfGroups) {
-        this.shelfGroups = shelfGroups;
+    public void setShelfGroupIds(List<Long> shelfGroupIds) {
+        this.shelfGroupIds = shelfGroupIds;
     }
 
 }
