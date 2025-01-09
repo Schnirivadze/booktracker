@@ -24,7 +24,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/login")
+    @GetMapping("/info")
     public ResponseEntity<User> loginAndGetUserInfo(@RequestBody LoginRequest loginRequest) {
         Optional<User> user = userService.authenticate(loginRequest.getLogin(), loginRequest.getPassword());
         if (user.isEmpty()) {
