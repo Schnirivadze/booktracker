@@ -3,7 +3,6 @@ package dev.andriiseleznov.java_book_tracker_backend.ShelfGroup;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,6 @@ public class ShelfGroupService {
     private final ShelfGroupRepository shelfGroupRepository;
     private final ShelfRepository shelfRepository;
 
-    @Autowired
     public ShelfGroupService(ShelfGroupRepository shelfGroupRepository,
             ShelfRepository shelfRepository) {
         this.shelfGroupRepository = shelfGroupRepository;

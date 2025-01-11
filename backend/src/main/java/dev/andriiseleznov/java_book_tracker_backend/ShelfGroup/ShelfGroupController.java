@@ -3,7 +3,6 @@ package dev.andriiseleznov.java_book_tracker_backend.ShelfGroup;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,7 +25,6 @@ public class ShelfGroupController {
     private final ShelfGroupService shelfGroupService;
     private final UserService userService;
 
-    @Autowired
     public ShelfGroupController(ShelfGroupService shelfGroupService, UserService userService) {
         this.shelfGroupService = shelfGroupService;
         this.userService = userService;

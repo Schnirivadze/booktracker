@@ -2,7 +2,6 @@ package dev.andriiseleznov.java_book_tracker_backend.User;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +22,6 @@ public class UserController {
 	private final UserService userService;
 	private final ShelfGroupService shelfGroupService;
 
-	@Autowired
 	public UserController(UserService userService, ShelfGroupService shelfGroupService) {
 		this.userService = userService;
 		this.shelfGroupService = shelfGroupService;
