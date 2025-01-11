@@ -3,14 +3,12 @@ package dev.andriiseleznov.java_book_tracker_backend.Shelf;
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.andriiseleznov.java_book_tracker_backend.Book.Book;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -32,9 +30,9 @@ public class Shelf {
     @Column(name = "dimentions_y", nullable = false)
     private Integer y;
 
-    @OneToMany
-    @JoinColumn(name = "shelf_id", referencedColumnName = "id")
-    private List<Book> books = new ArrayList<Book>();
+    @ElementCollection
+    @Column(name = "book_ids")
+    private List<Long> bookIds = new ArrayList<>();
 
     @Column(name = "shelf_group_id", nullable = false)
     private Long shelfGroupId;
@@ -42,12 +40,12 @@ public class Shelf {
     public Shelf() {
     }
 
-    public Shelf(Long id, String name, Integer x, Integer y, List<Book> books, Long shelfGroupId) {
+    public Shelf(Long id, String name, Integer x, Integer y, List<Long> bookIds, Long shelfGroupId) {
         this.id = id;
         this.name = name;
         this.x = x;
         this.y = y;
-        this.books = books;
+        this.bookIds = bookIds;
         this.shelfGroupId = shelfGroupId;
     }
 
@@ -83,12 +81,12 @@ public class Shelf {
         this.y = y;
     }
 
-    public List<Book> getBooks() {
-        return books;
+    public List<Long> getBookIds() {
+        return bookIds;
     }
 
-    public void setBooks(List<Book> books) {
-        this.books = books;
+    public void setBookIds(List<Long> bookIds) {
+        this.bookIds = bookIds;
     }
 
     public Long getShelfGroupId() {
