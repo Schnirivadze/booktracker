@@ -30,14 +30,6 @@ public class ShelfGroupController {
         this.userService = userService;
     }
 
-    @GetMapping("/{shelfGroupId}/shelves/")
-    public ResponseEntity<List<Long>> getShelfGroupShelvesIds(@PathVariable Long shelfGroupId) {
-        if (!shelfGroupService.shelfGroupExistsById(shelfGroupId)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.ok(shelfGroupService.getShelfGroupShelvesIds(shelfGroupId));
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ShelfGroup> getShelfGroupById(@PathVariable Long id) {
         Optional<ShelfGroup> shelfGroup = shelfGroupService.getShelfGroupById(id);
@@ -47,12 +39,20 @@ public class ShelfGroupController {
         return ResponseEntity.ok(shelfGroup.get());
     }
 
+    @GetMapping("/{shelfGroupId}/shelves")
+    public ResponseEntity<List<Long>> getShelfGroupShelvesIds(@PathVariable Long shelfGroupId) {
+        if (!shelfGroupService.shelfGroupExistsById(shelfGroupId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(shelfGroupService.getShelfGroupShelvesIds(shelfGroupId));
+    }
+
     @PostMapping
     public ResponseEntity<ShelfGroup> createShelfGroup(@RequestBody ShelfGroup shelfGroup) {
         return ResponseEntity.status(HttpStatus.CREATED).body(shelfGroupService.createShelfGroup(shelfGroup));
     }
 
-    @PostMapping("/{shelfGroupId}/users/")
+    @PutMapping("/{shelfGroupId}/users")
     public ResponseEntity<String> addUserToShelfGroup(@PathVariable Long shelfGroupId,
             @RequestBody LoginRequest loginRequest) {
         Optional<User> user = userService.authenticate(loginRequest.getLogin(), loginRequest.getPassword());
@@ -68,7 +68,7 @@ public class ShelfGroupController {
         return ResponseEntity.ok("User added to ShelfGroup successfully");
     }
 
-    @PostMapping("/{shelfGroupId}/shelves/{shelfId}")
+    @PutMapping("/{shelfGroupId}/shelves/{shelfId}")
     public ResponseEntity<String> addShelfToShelfGroup(@PathVariable Long shelfGroupId, @PathVariable Long shelfId) {
         if (!shelfGroupService.shelfGroupExistsById(shelfGroupId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ShelfGroup not found");

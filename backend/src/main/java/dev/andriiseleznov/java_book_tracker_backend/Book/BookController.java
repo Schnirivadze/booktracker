@@ -21,11 +21,6 @@ public class BookController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable Long id) {
         return bookService.getBookById(id)
@@ -33,7 +28,12 @@ public class BookController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/search")
+    @GetMapping("/shelf/{shelfId}")
+    public List<Book> getBooksByShelfId(@PathVariable Long shelfId) {
+        return bookService.getBooksByShelfId(shelfId);
+    }
+
+    @GetMapping("/search")
     public List<Book> searchBooks(@RequestBody SearchRequest searchRequest) {
         String keyword = searchRequest.getKeyword();
         int shelfGroupIndex = searchRequest.getShelfGroupIndex();
@@ -53,11 +53,6 @@ public class BookController {
         Long shelfGroupId = shelfGroupIds.get(shelfGroupIndex);
 
         return bookService.searchBooks(keyword, shelfGroupId);
-    }
-
-    @GetMapping("/shelf/{shelfId}")
-    public List<Book> getBooksByShelfId(@PathVariable Long shelfId) {
-        return bookService.getBooksByShelfId(shelfId);
     }
 
     @PostMapping

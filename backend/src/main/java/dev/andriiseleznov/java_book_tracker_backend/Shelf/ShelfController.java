@@ -25,7 +25,7 @@ public class ShelfController {
         return ResponseEntity.ok(shelfService.createShelf(shelf));
     }
 
-    @PostMapping("/{shelfId}/books/{bookId}")
+    @PutMapping("/{shelfId}/books/{bookId}")
     public ResponseEntity<String> addBookToShelf(@PathVariable Long shelfId, @PathVariable Long bookId) {
         shelfService.addBookToShelf(shelfId, bookId);
         return ResponseEntity.ok("Book added to shelf successfully");
