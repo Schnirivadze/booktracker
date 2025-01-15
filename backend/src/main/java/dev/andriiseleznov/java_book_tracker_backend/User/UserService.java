@@ -1,28 +1,35 @@
 package dev.andriiseleznov.java_book_tracker_backend.User;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder(); // Initialize the password encoder
     }
-
+    
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-
+    
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
-
+    
     public Optional<User> getUserByLogin(String login) {
         return userRepository.findByLogin(login);
+    }
+    
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     public void createUser(User user) {
@@ -34,7 +41,12 @@ public class UserService {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("User not found"));
         existingUser.setLogin(updatedUser.getLogin());
-        existingUser.setPassword(updatedUser.getPassword());
+
+        // Update password only if it's provided
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+            existingUser.setPassword(hashPassword(updatedUser.getPassword()));
+        }
+
         existingUser.setName(updatedUser.getName());
         existingUser.setEmail(updatedUser.getEmail());
         existingUser.setShelfGroupIds(updatedUser.getShelfGroupIds());
@@ -47,16 +59,15 @@ public class UserService {
     }
 
     private String hashPassword(String rawPassword) {
-        return rawPassword;
+        return passwordEncoder.encode(rawPassword); 
     }
 
     public Optional<User> authenticate(String login, String rawPassword) {
         Optional<User> user = userRepository.findByLogin(login);
-        if (user.isPresent() && rawPassword.equals(user.get().getPassword())) {
-            return user;
+        if (user.isPresent() && passwordEncoder.matches(rawPassword, user.get().getPassword())) {
+            return user; // Successful authentication
         }
-
-        return Optional.empty();
+        return Optional.empty(); // Authentication failed
     }
 
 }

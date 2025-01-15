@@ -1,10 +1,11 @@
 package dev.andriiseleznov.java_book_tracker_backend.Book;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import dev.andriiseleznov.java_book_tracker_backend.User.User;
 import dev.andriiseleznov.java_book_tracker_backend.User.UserService;
+import dev.andriiseleznov.java_book_tracker_backend.Util.JwtUtil;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,10 +16,12 @@ public class BookController {
 
     private final BookService bookService;
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
-    public BookController(BookService bookService, UserService userService) {
+    public BookController(BookService bookService, UserService userService, JwtUtil jwtUtil) {
         this.bookService = bookService;
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
     @GetMapping("/{id}")
@@ -34,14 +37,15 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public List<Book> searchBooks(@RequestBody SearchRequest searchRequest) {
-        String keyword = searchRequest.getKeyword();
-        int shelfGroupIndex = searchRequest.getShelfGroupIndex();
+    public List<Book> searchBooks(@RequestHeader("Authorization") String token, @RequestParam String keyword, @RequestParam int shelfGroupIndex) {
+        String username = jwtUtil.extractUsername(token);
+        if (username == null) {
+            throw new RuntimeException("Unauthorized: Invalid token");
+        }
 
-        Optional<User> userOptional = userService.authenticate(searchRequest.getLogin(), searchRequest.getPassword());
-
+        Optional<User> userOptional = userService.getUserByLogin(username);
         if (userOptional.isEmpty()) {
-            throw new RuntimeException("Unauthorized: Invalid credentials");
+            throw new RuntimeException("Unauthorized: Invalid token");
         }
 
         User user = userOptional.get();

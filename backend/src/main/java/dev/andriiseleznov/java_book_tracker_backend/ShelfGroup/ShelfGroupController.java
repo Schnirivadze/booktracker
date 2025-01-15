@@ -1,22 +1,15 @@
 package dev.andriiseleznov.java_book_tracker_backend.ShelfGroup;
 
-import java.util.List;
-import java.util.Optional;
+import dev.andriiseleznov.java_book_tracker_backend.User.User;
+import dev.andriiseleznov.java_book_tracker_backend.User.UserService;
+import dev.andriiseleznov.java_book_tracker_backend.Util.JwtUtil;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import dev.andriiseleznov.java_book_tracker_backend.User.LoginRequest;
-import dev.andriiseleznov.java_book_tracker_backend.User.UserService;
-import dev.andriiseleznov.java_book_tracker_backend.User.User;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/shelf-groups")
@@ -24,10 +17,12 @@ public class ShelfGroupController {
 
     private final ShelfGroupService shelfGroupService;
     private final UserService userService;
+    private final JwtUtil jwtUtil; // Inject JwtUtil to validate JWT token
 
-    public ShelfGroupController(ShelfGroupService shelfGroupService, UserService userService) {
+    public ShelfGroupController(ShelfGroupService shelfGroupService, UserService userService, JwtUtil jwtUtil) {
         this.shelfGroupService = shelfGroupService;
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
     @GetMapping("/{id}")
@@ -54,10 +49,16 @@ public class ShelfGroupController {
 
     @PutMapping("/{shelfGroupId}/users")
     public ResponseEntity<String> addUserToShelfGroup(@PathVariable Long shelfGroupId,
-            @RequestBody LoginRequest loginRequest) {
-        Optional<User> user = userService.authenticate(loginRequest.getLogin(), loginRequest.getPassword());
+            @RequestHeader("Authorization") String token) {
+        // Extract the username from the JWT token
+        String username = jwtUtil.extractUsername(token);
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
+
+        Optional<User> user = userService.getUserByLogin(username);
         if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid login or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token: User does not exist.");
         }
 
         if (!shelfGroupService.shelfGroupExistsById(shelfGroupId)) {
