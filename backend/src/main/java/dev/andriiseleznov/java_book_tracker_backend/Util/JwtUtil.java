@@ -15,10 +15,11 @@ public class JwtUtil {
     private String secretKey;
     private static final long EXPIRATION_MS = 14400000; 
 
-    private final Key signingKey;
-
-    public JwtUtil() {
-        this.signingKey = Keys.hmacShaKeyFor(secretKey.getBytes());
+    private Key getSigningKey() {
+        if (secretKey == null || secretKey.trim().isEmpty()) {
+            throw new IllegalArgumentException("JWT secret key is not set. Please check your configuration.");
+        }
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
     public String generateToken(String username) {
@@ -26,13 +27,13 @@ public class JwtUtil {
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
-                .signWith(signingKey, SignatureAlgorithm.HS512)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
     public String extractUsername(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(signingKey)
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
@@ -42,7 +43,7 @@ public class JwtUtil {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
-                .setSigningKey(signingKey)
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token);
             return true;
