@@ -1,6 +1,6 @@
 package dev.andriiseleznov.java_book_tracker_backend.User;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,11 +9,11 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder(); // Initialize the password encoder
+        this.passwordEncoder = passwordEncoder;
     }
     
     public List<User> getAllUsers() {
@@ -33,7 +33,7 @@ public class UserService {
     }
 
     public void createUser(User user) {
-        user.setPassword(hashPassword(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
@@ -42,9 +42,8 @@ public class UserService {
                 .orElseThrow(() -> new IllegalStateException("User not found"));
         existingUser.setLogin(updatedUser.getLogin());
 
-        // Update password only if it's provided
         if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
-            existingUser.setPassword(hashPassword(updatedUser.getPassword()));
+            existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
 
         existingUser.setName(updatedUser.getName());
@@ -56,10 +55,6 @@ public class UserService {
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
-    }
-
-    private String hashPassword(String rawPassword) {
-        return passwordEncoder.encode(rawPassword); 
     }
 
     public Optional<User> authenticate(String login, String rawPassword) {

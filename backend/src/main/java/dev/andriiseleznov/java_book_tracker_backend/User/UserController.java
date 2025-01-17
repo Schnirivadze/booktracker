@@ -2,7 +2,6 @@ package dev.andriiseleznov.java_book_tracker_backend.User;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import dev.andriiseleznov.java_book_tracker_backend.ShelfGroup.ShelfGroupService;
@@ -16,13 +15,11 @@ public class UserController {
 	private final UserService userService;
 	private final ShelfGroupService shelfGroupService;
 	private final JwtUtil jwtUtil;
-	private final BCryptPasswordEncoder passwordEncoder;
 
 	public UserController(UserService userService, ShelfGroupService shelfGroupService, JwtUtil jwtUtil) {
 		this.userService = userService;
 		this.shelfGroupService = shelfGroupService;
 		this.jwtUtil = jwtUtil;
-		this.passwordEncoder = new BCryptPasswordEncoder();
 	}
 
 	@GetMapping("/info")
@@ -49,7 +46,6 @@ public class UserController {
         }
 
         try {
-            user.setPassword(passwordEncoder.encode(user.getPassword())); // Hash password before saving
             userService.createUser(user);
             return ResponseEntity.status(201).body("User registered successfully.");
         } catch (IllegalStateException e) {
