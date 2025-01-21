@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [registerData, setRegisterData] = useState({
-    name: '',
-    login: '',
-    password: '',
-    email: '',
+    name: "",
+    login: "",
+    password: "",
+    email: "",
   });
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -19,14 +19,21 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Attempting registration with data:', registerData);
     try {
-      await axios.post('http://localhost:8080/api/users/register', registerData);
-      setMessage('Registered successfully! Redirecting to login...');
-      setTimeout(() => navigate('/'), 100);
+        await axios.post(
+            'http://localhost:8080/api/users/register', // Updated endpoint
+            registerData
+        );
+        console.log('Registration successful!');
+        setMessage('Registered successfully! Redirecting to login...');
+        setTimeout(() => navigate('/'), 100);
     } catch (error) {
-      setMessage('Registration failed. Please try again.');
+        console.error('Registration failed:', error);
+        setMessage('Registration failed. Please try again.');
     }
-  };
+};
+
 
   return (
     <div className="auth-container">

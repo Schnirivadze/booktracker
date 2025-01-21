@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
+* {
+    padding: 0;
+    margin: 0;
+    font-family: "Courier Prime", serif;
+}
+
+body {
+    overflow: hidden;
+    background-color: #f2f1f6;
+}
+
+.top-bar {
+    width: 100%;
+    height: 5vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.search-bar {
+    margin-left: 25%;
+    width: 50%;
+    height: 2.5vh;
+    border-radius: 10px;
+    outline: none;
+    border: lightgray 1px solid;
+    padding-top: 0.5vh;
+    padding-bottom: 0.5vh;
+    padding-left: 1vw;
+    margin-right: calc(22vw - 3.5vh - 3vw);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    font-family: "Roboto Mono", serif;
+    background-color: #f2f1f6;
+}
+
+.settings-button {
+    margin-right: 1vw;
+    width: 3.5vh;
+    height: 3.5vh;
+    border-radius: 10px;
+    border: lightgray 1px solid;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    background-color: #f2f1f6;
+}
+
+.logout-button {
+    margin-right: 1vw;
+    padding-left: 0.5vw;
+    padding-right: 0.5vw;
+    height: 3.5vh;
+    border-radius: 10px;
+    border: lightgray 1px solid;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    background-color: #f2f1f6;
+}
+
+.side-panel {
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.shelf-group-tile {
+    padding-left: 25px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    font-size: 1.175em;
+    margin-top: 2.5vh;
+    width: calc(90% - 25px);
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    user-select: none;
+}
+
+.shelf-group-tile-add {
+    padding-top: 25px;
+    padding-bottom: 25px;
+    font-size: 1.175em;
+    margin-top: 2.5vh;
+    width: 90%;
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+}
+
+.self-group-shelves {
+    margin-top: -15px;
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    background-color: white;
+    width: calc(90%);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    border-top: 1px black dashed;
+}
+
+.shelf-option {
+    border-radius: 10px;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 35px;
+    user-select: none;
+}
+
+.shelf-option:hover {
+    background-color: lightgray;
+    transition: background-color 0.125s;
+}
+
+.main-content {
+    width: 85%;
+}
+
+.book-tile {
+    font-size: 1.25em;
+    margin-top: 2.5vh;
+    margin-bottom: 2.5vh;
+    width: 16vw;
+    height: 10vw;
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    margin-left: 2.5vw;
+    padding: 1vw;
+}
+
+.book-tile h3 {
+    font-size: 1.5em;
+}
+
+.book-tile p {
+    font-size: 1em;
+    margin-left: 0.5vw;
+}
+
+.book-tile div {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px 10px;
+    overflow-y: scroll;
+    max-height: 12vh;
+
+}
+
+.book-tile tag {
+    font-size: 0.75em;
+    height: 17px;
+    border-radius: 20px;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px lightgray solid;
+}
+
+.book-tile-add {
+
+    font-size: 1.25em;
+    margin-top: 2.5vh;
+    margin-bottom: 2.5vh;
+    width: 16vw;
+    height: 10vw;
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    margin-left: 2.5vw;
+    padding: 1vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+}
+
+.books-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.bottom-wrapper {
+    height: 95vh;
+    display: flex;
+    flex-direction: row;
+
+}

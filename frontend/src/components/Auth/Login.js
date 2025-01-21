@@ -1,26 +1,52 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const Login = () => {
-  const [loginData, setLoginData] = useState({ login: '', password: '' });
-  const [message, setMessage] = useState('');
+  const [loginData, setLoginData] = useState({ login: "", password: "" });
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const { setToken } = useContext(AuthContext); // Use AuthContext to manage the token
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLoginData({ ...loginData, [name]: value });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   console.log('Attempting login with data:', loginData);
+  //   try {
+  //     const response = await axios.post(
+  //       'http://localhost:8080/api/users/authenticate', // Updated endpoint
+  //       loginData
+  //     );
+  //     const token = response.data;
+  //     console.log('Login successful, token received:', token);
+  //     localStorage.setItem('token', token); // Save token
+  //     setMessage('Logged in successfully!');
+  //     setTimeout(() => navigate('/'), 100);
+  //   } catch (error) {
+  //     console.error('Login failed:', error);
+  //     setMessage('Invalid login or password. Please try again.');
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8080/api/users/authenticate', loginData);
-      localStorage.setItem('token', response.data.token); // Save token
-      setMessage('Logged in successfully!');
-      setTimeout(() => navigate('/'), 100);
+      console.log("Attempting login with data:", loginData);
+      const response = await axios.post(
+        "http://localhost:8080/api/users/authenticate",
+        loginData
+      );
+      console.log("Login successful, token received:", response.data);
+      setToken(response.data); // Store the token in context
+      setMessage("Logged in successfully!");
+      setTimeout(() => navigate("/dashboard"), 100);
     } catch (error) {
-      setMessage('Invalid login or password. Please try again.');
+      console.error("Login failed:", error);
+      setMessage("Invalid login or password. Please try again.");
     }
   };
 
