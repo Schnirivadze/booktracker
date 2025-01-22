@@ -39,11 +39,18 @@ public class UserService {
 
     public void updateUser(Long id, User updatedUser) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("User not found"));
-        existingUser.setLogin(updatedUser.getLogin());
-
+            .orElseThrow(() -> new IllegalStateException("User not found"));
+    
+        // Only update login if it's changed
+        if (!existingUser.getLogin().equals(updatedUser.getLogin())) {
+            existingUser.setLogin(updatedUser.getLogin());
+        }
+    
+        // Only rehash and update password if it's provided and has changed
         if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
-            existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            if (!updatedUser.getPassword().equals(existingUser.getPassword())) {
+                existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            }
         }
 
         existingUser.setName(updatedUser.getName());
