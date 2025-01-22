@@ -7,6 +7,7 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,12 +27,12 @@ public class ShelfGroup {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "shelf_group_user_ids", joinColumns = @JoinColumn(name = "shelf_group_id"))
     @Column(name = "user_id")
     private List<Long> userIds = new ArrayList<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "shelf_group_shelf_ids", joinColumns = @JoinColumn(name = "shelf_group_id"))
     @Column(name = "shelf_id")
     private List<Long> shelfIds = new ArrayList<>();
