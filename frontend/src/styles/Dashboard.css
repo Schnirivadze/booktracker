@@ -69,7 +69,6 @@ body {
     padding-bottom: 25px;
     font-size: 1.175em;
     margin-top: 2.5vh;
-    width: calc(90% - 25px);
     border-radius: 15px;
     background-color: white;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
@@ -83,12 +82,17 @@ body {
     margin-top: 2.5vh;
     width: 90%;
     border-radius: 15px;
-    background-color: white;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
     display: flex;
     justify-content: center;
     align-items: center;
     user-select: none;
+    opacity: .625;
+    background: repeating-linear-gradient(45deg, #f2f1f6, #f2f1f6 4.5px, #ffffff 4.5px, #ffffff 22.5px);
+}
+
+.shelf-group-wrapper {
+    width: 90%;
 }
 
 .self-group-shelves {
@@ -96,7 +100,7 @@ body {
     border-bottom-right-radius: 15px;
     border-bottom-left-radius: 15px;
     background-color: white;
-    width: calc(90%);
+    width: 100%;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
     border-top: 1px black dashed;
 }
@@ -107,6 +111,16 @@ body {
     padding-bottom: 1vh;
     padding-left: 35px;
     user-select: none;
+}
+
+.add-shelf-option {
+    border-radius: 10px;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    padding-left: 35px;
+    user-select: none;
+    opacity: .625;
+    background: repeating-linear-gradient(45deg, #f2f1f6, #f2f1f6 4.5px, #ffffff 4.5px, #ffffff 22.5px);
 }
 
 .shelf-option:hover {
@@ -151,7 +165,7 @@ body {
 
 }
 
-.book-tile tag {
+.book-tag {
     font-size: 0.75em;
     height: 17px;
     border-radius: 20px;
@@ -169,7 +183,6 @@ body {
     width: 16vw;
     height: 10vw;
     border-radius: 15px;
-    background-color: white;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
     margin-left: 2.5vw;
     padding: 1vw;
@@ -177,6 +190,10 @@ body {
     justify-content: center;
     align-items: center;
     user-select: none;
+    background-color: #ffffff;
+    opacity: .625;
+    background: repeating-linear-gradient(45deg, #f2f1f6, #f2f1f6 4.5px, #ffffff 4.5px, #ffffff 22.5px);
+
 }
 
 .books-grid {
@@ -190,4 +207,21 @@ body {
     display: flex;
     flex-direction: row;
 
+}
+
+.add-book-popup {
+    width: 85%;
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+}
+
+.add-book-popup button {
+    width: 10vw;
 }
