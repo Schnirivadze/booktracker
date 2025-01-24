@@ -35,6 +35,33 @@ body {
     background-color: #f2f1f6;
 }
 
+.search-results {
+    border: lightgray 1px solid;
+    border-top: none;
+    position: absolute;
+    width: calc(50vw + 6px);
+    top: 3.625vh;
+    left: 25vw;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    font-family: "Roboto Mono", serif;
+    background-color: #f2f1f6;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.search-result {
+    padding-left: 1vw;
+    border-radius: 10px;
+    padding-top: 0.75vh;
+    padding-bottom: 0.75vh;
+    user-select: none;
+}
+
+.search-result:hover {
+    background-color: lightgray;
+    transition: background-color 0.125s;
+}
+
 .settings-button {
     margin-right: 1vw;
     width: 3.5vh;
@@ -200,6 +227,8 @@ body {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    overflow-y: scroll;
+    max-height: 95vh;
 }
 
 .bottom-wrapper {

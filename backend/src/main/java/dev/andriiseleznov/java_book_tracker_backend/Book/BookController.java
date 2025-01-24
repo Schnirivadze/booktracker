@@ -1,26 +1,21 @@
 package dev.andriiseleznov.java_book_tracker_backend.Book;
 
-import dev.andriiseleznov.java_book_tracker_backend.User.User;
-import dev.andriiseleznov.java_book_tracker_backend.User.UserService;
 import dev.andriiseleznov.java_book_tracker_backend.Util.JwtUtil;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
 
     private final BookService bookService;
-    private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    public BookController(BookService bookService, UserService userService, JwtUtil jwtUtil) {
+    public BookController(BookService bookService, JwtUtil jwtUtil) {
         this.bookService = bookService;
-        this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
 
@@ -37,26 +32,15 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public List<Book> searchBooks(@RequestHeader("Authorization") String token, @RequestParam String keyword, @RequestParam int shelfGroupIndex) {
-        String username = jwtUtil.extractUsername(token);
-        if (username == null) {
+    public List<Book> searchBooks(@RequestHeader("Authorization") String token, @RequestParam String keyword, @RequestParam Long shelfId) {
+
+		String login = jwtUtil.extractUsername(token.replace("Bearer ", ""));
+		if (login == null) {
+			
             throw new RuntimeException("Unauthorized: Invalid token");
-        }
+		}
 
-        Optional<User> userOptional = userService.getUserByLogin(username);
-        if (userOptional.isEmpty()) {
-            throw new RuntimeException("Unauthorized: Invalid token");
-        }
-
-        User user = userOptional.get();
-        List<Long> shelfGroupIds = user.getShelfGroupIds();
-        if (shelfGroupIds.isEmpty() || shelfGroupIndex < 0 || shelfGroupIndex >= shelfGroupIds.size()) {
-            throw new RuntimeException("Invalid shelf group index");
-        }
-
-        Long shelfGroupId = shelfGroupIds.get(shelfGroupIndex);
-
-        return bookService.searchBooks(keyword, shelfGroupId);
+        return bookService.searchBooks(keyword, shelfId);
     }
 
     @PostMapping

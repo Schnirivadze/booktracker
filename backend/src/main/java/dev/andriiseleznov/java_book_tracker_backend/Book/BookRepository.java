@@ -27,4 +27,13 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 			":keyword MEMBER OF b.tags) " +
 			"AND b.shelfId IN (SELECT s.id FROM Shelf s WHERE s.shelfGroupId = :shelfGroupId)")
 	List<Book> searchBooksByShelfGroup(@Param("keyword") String keyword, @Param("shelfGroupId") Long shelfGroupId);
+
+	// Search books within a specific Shelf
+	@Query("SELECT b FROM Book b " +
+			"WHERE (LOWER(b.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+			"LOWER(b.author) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+			":keyword MEMBER OF b.tags) " +
+			"AND b.shelfId = :shelfId")
+	List<Book> searchBooksByShelf(@Param("keyword") String keyword, @Param("shelfId") Long shelfId);
+
 }

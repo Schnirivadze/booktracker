@@ -7,11 +7,12 @@ const Dashboard = () => {
   const [shelfGroups, setShelfGroups] = useState([]);
   const [shelvesByGroup, setShelvesByGroup] = useState({});
   const [selectedShelfId, setSelectedShelfId] = useState(null);
-  const [selectedShelGroupfId, setSelectedShelfGroupId] = useState(null);
   const [books, setBooks] = useState([]);
   const [isAddBookPopupVisible, setAddBookPopupVisible] = useState(false);
   const [isAddShelfPopupVisible, setAddShelfPopupVisible] = useState(false);
   const [isAddShelfGroupPopupVisible, setAddShelfGroupPopupVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const [newBookData, setNewBookData] = useState({
     x: "",
     y: "",
@@ -166,19 +167,48 @@ const Dashboard = () => {
       })
       .catch((error) => console.error("Error adding shelf group:", error));
   };
+  // Handle search functionality
   useEffect(() => {
-    if (newShelfData.shelfGroupId !== null) {
-      console.log("Updated newShelfData:", newShelfData);
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
     }
-  }, [newShelfData]);
+
+    const delayDebounceFn = setTimeout(() => {
+      fetch(`http://localhost:8080/api/books/search?keyword=${encodeURIComponent(searchQuery)}&shelfId=${encodeURIComponent(selectedShelfId)}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      
+        .then((res) => res.json())
+        .then((results) => setSearchResults(results))
+        .catch((error) => console.error("Error fetching search results:", error));
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery, token]);
 
   return (
     <div>
       {/* Top Bar */}
       <div className="top-bar">
-        <input type="text" className="search-bar" placeholder="Search books..." />
+        <input
+          type="text"
+          className="search-bar"
+          placeholder="Search books..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
         <button className="settings-button">⚙️</button>
         <button className="logout-button" onClick={handleLogout}>Logout</button>
+        {searchResults.length > 0 && (
+          <div className="search-results">
+            {searchResults.map((result) => (
+              <div key={result.id} className="search-result">
+                <b>{result.title}</b> by {result.author}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Bottom Wrapper */}

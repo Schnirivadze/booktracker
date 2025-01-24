@@ -30,8 +30,8 @@ public class BookService {
         return bookRepository.findByTagsContaining(tag);
     }
 
-    public List<Book> searchBooks(String keyword, Long shelfGroupId) {
-        return bookRepository.searchBooksByShelfGroup(keyword, shelfGroupId);
+    public List<Book> searchBooks(String keyword, Long shelfId) {
+        return bookRepository.searchBooksByShelf(keyword, shelfId);
     }
 
     public Book addBook(Book book) {
