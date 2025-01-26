@@ -7,6 +7,7 @@ const Dashboard = () => {
   const [shelfGroups, setShelfGroups] = useState([]);
   const [shelvesByGroup, setShelvesByGroup] = useState({});
   const [selectedShelfId, setSelectedShelfId] = useState(null);
+  const [selectedShelf, setSelectedShelf] = useState(null);
   const [books, setBooks] = useState([]);
   const [isAddBookPopupVisible, setAddBookPopupVisible] = useState(false);
   const [isAddShelfPopupVisible, setAddShelfPopupVisible] = useState(false);
@@ -22,6 +23,10 @@ const Dashboard = () => {
   });
   const [newShelfData, setNewShelfData] = useState({ name: "", x: null, y: null, shelfGroupId: null });
   const [newShelfGroupData, setNewShelfGroupData] = useState({ name: "" });
+
+  // State to handle book show popup
+  const [isBookShowPopupVisible, setBookShowPopupVisible] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
 
   const controllerRef = React.useRef(null);
 
@@ -187,6 +192,18 @@ const Dashboard = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery, token]);
 
+  // Open Book Show Popup
+  const openBookShowPopup = (book) => {
+    setSelectedBook(book);
+    setBookShowPopupVisible(true);
+  };
+
+  // Close Book Show Popup
+  const closeBookShowPopup = () => {
+    setBookShowPopupVisible(false);
+    setSelectedBook(null);
+  };
+
   return (
     <div>
       {/* Top Bar */}
@@ -203,7 +220,7 @@ const Dashboard = () => {
         {searchResults.length > 0 && (
           <div className="search-results">
             {searchResults.map((result) => (
-              <div key={result.id} className="search-result">
+              <div key={result.id} className="search-result" onClick={() => openBookShowPopup(result)}>
                 <b>{result.title}</b> by {result.author}
               </div>
             ))}
@@ -223,7 +240,7 @@ const Dashboard = () => {
                   <div
                     key={shelf.id}
                     className="shelf-option"
-                    onClick={() => {setSelectedShelfId(shelf.id);setAddShelfPopupVisible(false)}}
+                    onClick={() => { setSelectedShelfId(shelf.id); setAddShelfPopupVisible(false); setSelectedShelf(shelf) }}
                   >
                     {shelf.name}
                   </div>
@@ -249,11 +266,11 @@ const Dashboard = () => {
         </div>
 
         {/* Main Content */}
-        {!isAddBookPopupVisible && !isAddShelfPopupVisible && !isAddShelfGroupPopupVisible && (
+        {!isBookShowPopupVisible && !isAddBookPopupVisible && !isAddShelfPopupVisible && !isAddShelfGroupPopupVisible && (
           <div className="main-content">
             <div className="books-grid">
               {books.map((book) => (
-                <div key={book.id} className="book-tile">
+                <div key={book.id} className="book-tile" onClick={() => openBookShowPopup(book)}>
                   <h3>{book.title}</h3>
                   <p>{book.author}</p>
                   <div>
@@ -267,6 +284,44 @@ const Dashboard = () => {
                 ➕ Add Book
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Book Show Popup */}
+        {isBookShowPopupVisible && selectedBook && (
+          <div className="book-show-popup">
+            <div className="info-wrapper">
+              <div className="title">{selectedBook.title}</div>
+              <div className="author">{selectedBook.author}</div>
+              <div className="description">{selectedBook.description}</div>
+            </div>
+
+            {/* Table to represent shelf */}
+            <div className="table-container">
+              <table>
+                <tbody>
+                  {/* Dynamically generate rows */}
+                  {Array.from({ length: selectedShelf.y }).map((_, rowIndex) => (
+                    <tr key={rowIndex}>
+                      {/* Dynamically generate columns */}
+                      {Array.from({ length: selectedShelf.x }).map((_, colIndex) => (
+                        <td
+                          key={colIndex}
+                          className={
+                            rowIndex === selectedBook.y - 1 && colIndex === selectedBook.x - 1
+                              ? "selected-shelf-rectangle"
+                              : ""
+                          }
+                        ></td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Close button */}
+            <div className="close" onClick={closeBookShowPopup}>✖</div>
           </div>
         )}
 
