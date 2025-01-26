@@ -184,7 +184,7 @@ const Dashboard = () => {
       fetch(`http://localhost:8080/api/books/search?keyword=${encodeURIComponent(searchQuery)}&shelfId=${encodeURIComponent(selectedShelfId)}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      
+
         .then((res) => res.json())
         .then((results) => setSearchResults(results))
         .catch((error) => console.error("Error fetching search results:", error));
@@ -216,7 +216,7 @@ const Dashboard = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           onFocus={() => setIsSearchFocused(true)} 
-          onBlur={() => setIsSearchFocused(false)}  
+          onBlur={() => setTimeout(() => setIsSearchFocused(false), 150)}
         />
         <button className="settings-button">⚙️</button>
         <button className="logout-button" onClick={handleLogout}>Logout</button>
