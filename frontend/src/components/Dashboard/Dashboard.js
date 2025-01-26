@@ -4,6 +4,7 @@ import '../../styles/Dashboard.css';
 
 const Dashboard = () => {
   const { token, user, handleLogout } = useContext(AuthContext);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [shelfGroups, setShelfGroups] = useState([]);
   const [shelvesByGroup, setShelvesByGroup] = useState({});
   const [selectedShelfId, setSelectedShelfId] = useState(null);
@@ -214,10 +215,12 @@ const Dashboard = () => {
           placeholder="Search books..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          onFocus={() => setIsSearchFocused(true)} 
+          onBlur={() => setIsSearchFocused(false)}  
         />
         <button className="settings-button">⚙️</button>
         <button className="logout-button" onClick={handleLogout}>Logout</button>
-        {searchResults.length > 0 && (
+        {isSearchFocused && searchResults.length > 0 && (
           <div className="search-results">
             {searchResults.map((result) => (
               <div key={result.id} className="search-result" onClick={() => openBookShowPopup(result)}>
