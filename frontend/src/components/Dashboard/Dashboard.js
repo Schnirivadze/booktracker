@@ -29,8 +29,29 @@ const Dashboard = () => {
   const [isBookShowPopupVisible, setBookShowPopupVisible] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
 
-  const controllerRef = React.useRef(null);
+  // State for right-click menu
+  const [isRightClickMenuVisible, setRightClickMenuVisible] = useState(false);
+  const [rightClickMenuPosition, setRightClickMenuPosition] = useState({ x: 0, y: 0 });
+  const [rightClickedBook, setRightClickedBook] = useState(null);
 
+  const controllerRef = React.useRef(null);
+  const handleRightClick = (event, book) => {
+    event.preventDefault(); // Prevent the default browser context menu
+    setRightClickMenuPosition({ x: event.pageX, y: event.pageY });
+    setRightClickMenuVisible(true);
+    setRightClickedBook(book);
+  };
+  const handleGlobalClick = () => {
+    setRightClickMenuVisible(false); // Hide the context menu on global click
+  };
+
+  // Attach a global click listener to hide the context menu
+  useEffect(() => {
+    document.addEventListener("click", handleGlobalClick);
+    return () => {
+      document.removeEventListener("click", handleGlobalClick);
+    };
+  }, []);
   // Fetch shelf groups on load
   useEffect(() => {
     if (!user) return;
@@ -273,7 +294,7 @@ const Dashboard = () => {
           <div className="main-content">
             <div className="books-grid">
               {books.map((book) => (
-                <div key={book.id} className="book-tile" onClick={() => openBookShowPopup(book)}>
+                <div key={book.id} className="book-tile" onClick={() => openBookShowPopup(book)} onContextMenu={(event) => handleRightClick(event, book)}>
                   <h3>{book.title}</h3>
                   <p>{book.author}</p>
                   <div>
@@ -447,7 +468,22 @@ const Dashboard = () => {
           </form>
         )}
       </div>
-    </div>
+      {/* Right-Click Menu */}
+      {isRightClickMenuVisible && (
+        <div
+          className="right-click-menu"
+          style={{
+            position: "absolute",
+            top: rightClickMenuPosition.y,
+            left: rightClickMenuPosition.x,
+          }}
+        >
+          <div className="option" onClick={() => openBookShowPopup(rightClickedBook)}>Open</div>
+          <div className="option" >Edit</div>
+          <div className="option" >Delete</div>
+        </div>
+      )}
+    </div >
   );
 };
 
