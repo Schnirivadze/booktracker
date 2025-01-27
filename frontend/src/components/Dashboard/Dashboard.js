@@ -4,6 +4,8 @@ import '../../styles/Dashboard.css';
 
 const Dashboard = () => {
   const { token, user, handleLogout } = useContext(AuthContext);
+  const [isEditBookPopupVisible, setEditBookPopupVisible] = useState(false);
+  const [bookToEdit, setBookToEdit] = useState(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [shelfGroups, setShelfGroups] = useState([]);
   const [shelvesByGroup, setShelvesByGroup] = useState({});
@@ -178,6 +180,56 @@ const Dashboard = () => {
       alert("Failed to delete the book. Please try again.");
     }
   };
+  // Open Edit Book Popup
+  const openEditBookPopup = (book) => {
+    setBookToEdit(book);
+    setNewBookData({
+      title: book.title,
+      author: book.author,
+      tags: book.tags.join(", "),
+      x: book.x,
+      y: book.y,
+    });
+    setEditBookPopupVisible(true);
+  };
+
+  // Handle Edit Book
+  const handleEditBookSubmit = (e) => {
+    e.preventDefault();
+
+    const updatedBookData = {
+      ...newBookData,
+      shelfId: selectedShelfId,
+      tags: newBookData.tags.split(",").map((tag) => tag.trim()),
+      x: parseInt(newBookData.x),
+      y: parseInt(newBookData.y),
+    };
+
+    if (isNaN(updatedBookData.x) || isNaN(updatedBookData.y)) {
+      alert("Position X and Y must be valid integers.");
+      return;
+    }
+
+    fetch(`http://localhost:8080/api/books/${bookToEdit.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(updatedBookData),
+    })
+      .then((res) => res.json())
+      .then((updatedBook) => {
+        setBooks((prevBooks) =>
+          prevBooks.map((book) =>
+            book.id === updatedBook.id ? updatedBook : book
+          )
+        );
+        setEditBookPopupVisible(false);
+        setBookToEdit(null);
+      })
+      .catch((error) => console.error("Error updating book:", error));
+  };
   // Handle Add Shelf
   const handleAddShelfSubmit = (e) => {
     e.preventDefault();
@@ -261,7 +313,7 @@ const Dashboard = () => {
           placeholder="Search books..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onFocus={() => setIsSearchFocused(true)} 
+          onFocus={() => setIsSearchFocused(true)}
           onBlur={() => setTimeout(() => setIsSearchFocused(false), 150)}
         />
         <button className="settings-button">⚙️</button>
@@ -315,7 +367,7 @@ const Dashboard = () => {
         </div>
 
         {/* Main Content */}
-        {!isBookShowPopupVisible && !isAddBookPopupVisible && !isAddShelfPopupVisible && !isAddShelfGroupPopupVisible && (
+        {!isEditBookPopupVisible &&!isBookShowPopupVisible && !isAddBookPopupVisible && !isAddShelfPopupVisible && !isAddShelfGroupPopupVisible && (
           <div className="main-content">
             <div className="books-grid">
               {books.map((book) => (
@@ -492,6 +544,72 @@ const Dashboard = () => {
             <button type="button" onClick={() => setAddShelfGroupPopupVisible(false)}>Cancel</button>
           </form>
         )}
+      {/* Add Book/Edit Book Popup*/}
+      {isEditBookPopupVisible && (
+        <form
+          className="add-book-popup"
+          onSubmit={isEditBookPopupVisible ? handleEditBookSubmit : handleAddBookSubmit}
+        >
+          <label>
+            Title:
+            <input
+              type="text"
+              name="title"
+              value={newBookData.title}
+              onChange={(e) => setNewBookData({ ...newBookData, title: e.target.value })}
+              required
+            />
+          </label>
+          <label>
+            Author:
+            <input
+              type="text"
+              name="author"
+              value={newBookData.author}
+              onChange={(e) => setNewBookData({ ...newBookData, author: e.target.value })}
+              required
+            />
+          </label>
+          <label>
+            Tags:
+            <input
+              type="text"
+              name="tags"
+              value={newBookData.tags}
+              onChange={(e) => setNewBookData({ ...newBookData, tags: e.target.value })}
+            />
+          </label>
+          <label>
+            Position X:
+            <input
+              type="number"
+              name="x"
+              value={newBookData.x}
+              onChange={(e) => setNewBookData({ ...newBookData, x: e.target.value })}
+              required
+            />
+          </label>
+          <label>
+            Position Y:
+            <input
+              type="number"
+              name="y"
+              value={newBookData.y}
+              onChange={(e) => setNewBookData({ ...newBookData, y: e.target.value })}
+              required
+            />
+          </label>
+          <button type="submit">{isEditBookPopupVisible ? "Save Changes" : "Add Book"}</button>
+          <button
+            type="button"
+            onClick={() =>
+              isEditBookPopupVisible ? setEditBookPopupVisible(false) : setAddBookPopupVisible(false)
+            }
+          >
+            Cancel
+          </button>
+        </form>
+      )}
       </div>
       {/* Right-Click Menu */}
       {isRightClickMenuVisible && (
@@ -504,7 +622,7 @@ const Dashboard = () => {
           }}
         >
           <div className="option" onClick={() => openBookShowPopup(rightClickedBook)}>Open</div>
-          <div className="option" >Edit</div>
+          <div className="option" onClick={() => {openEditBookPopup(rightClickedBook);console.log("noe")}}>Edit</div>
           <div className="option" onClick={() => handleDeleteBook(rightClickedBook.id)}>Delete</div>
         </div>
       )}
