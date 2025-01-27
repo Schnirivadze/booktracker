@@ -153,6 +153,31 @@ const Dashboard = () => {
       })
       .catch((error) => console.error("Error adding book:", error));
   };
+  // Add this function to handle the deletion of a book
+  const handleDeleteBook = async (bookId) => {
+    const confirmation = window.confirm("Are you sure you want to delete this book?");
+    if (!confirmation) return;
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/books/${bookId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete the book");
+      }
+
+      // Remove the deleted book from the state
+      setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
+      setRightClickMenuVisible(false); // Hide the context menu
+    } catch (error) {
+      console.error("Error deleting book:", error);
+      alert("Failed to delete the book. Please try again.");
+    }
+  };
   // Handle Add Shelf
   const handleAddShelfSubmit = (e) => {
     e.preventDefault();
@@ -480,7 +505,7 @@ const Dashboard = () => {
         >
           <div className="option" onClick={() => openBookShowPopup(rightClickedBook)}>Open</div>
           <div className="option" >Edit</div>
-          <div className="option" >Delete</div>
+          <div className="option" onClick={() => handleDeleteBook(rightClickedBook.id)}>Delete</div>
         </div>
       )}
     </div >
