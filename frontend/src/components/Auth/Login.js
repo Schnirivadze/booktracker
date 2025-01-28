@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
+import "../../styles/App.css"
 
 const Login = () => {
 	const [loginData, setLoginData] = useState({ login: "", password: "" });
@@ -54,26 +55,22 @@ const Login = () => {
 		<div className="auth-container">
 			<h1>Login</h1>
 			<form onSubmit={handleSubmit}>
-				<div>
-					<label>Login:</label>
+				<label>Login:
 					<input
 						type="text"
 						name="login"
 						value={loginData.login}
 						onChange={handleChange}
 						required
-					/>
-				</div>
-				<div>
-					<label>Password:</label>
+					/></label>
+				<label>Password:
 					<input
 						type="password"
 						name="password"
 						value={loginData.password}
 						onChange={handleChange}
 						required
-					/>
-				</div>
+					/></label>
 				<button type="submit">Login</button>
 			</form>
 			<p>{message}</p>

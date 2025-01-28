@@ -39,46 +39,38 @@ const Register = () => {
 		<div className="auth-container">
 			<h1>Register</h1>
 			<form onSubmit={handleSubmit}>
-				<div>
-					<label>Name:</label>
+				<label>Name:
 					<input
 						type="text"
 						name="name"
 						value={registerData.name}
 						onChange={handleChange}
 						required
-					/>
-				</div>
-				<div>
-					<label>Login:</label>
+					/></label>
+				<label>Login:
 					<input
 						type="text"
 						name="login"
 						value={registerData.login}
 						onChange={handleChange}
 						required
-					/>
-				</div>
-				<div>
-					<label>Password:</label>
+					/></label>
+				<label>Password:
 					<input
 						type="password"
 						name="password"
 						value={registerData.password}
 						onChange={handleChange}
 						required
-					/>
-				</div>
-				<div>
-					<label>Email:</label>
+					/></label>
+				<label>Email:
 					<input
 						type="email"
 						name="email"
 						value={registerData.email}
 						onChange={handleChange}
 						required
-					/>
-				</div>
+					/></label>
 				<button type="submit">Sign Up</button>
 			</form>
 			<p>{message}</p>
