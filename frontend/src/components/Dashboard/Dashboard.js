@@ -1,12 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
+import TopBar from "./TopBar";
+import SidePanel from "./SidePanel";
+import MainContent from "./MainContent";
+import AddBookPopup from "./Popups/AddBookPopup";
+import EditBookPopup from "./Popups/EditBookPopup";
+import AddShelfPopup from "./Popups/AddShelfPopup";
+import AddShelfGroupPopup from "./Popups/AddShelfGroupPopup";
+import BookShowPopup from "./Popups/BookShowPopup";
+import RightClickMenu from "./RightClickMenu";
 import '../../styles/Dashboard.css';
 
 const Dashboard = () => {
   const { token, user, handleLogout } = useContext(AuthContext);
   const [isEditBookPopupVisible, setEditBookPopupVisible] = useState(false);
   const [bookToEdit, setBookToEdit] = useState(null);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [shelfGroups, setShelfGroups] = useState([]);
   const [shelvesByGroup, setShelvesByGroup] = useState({});
   const [selectedShelfId, setSelectedShelfId] = useState(null);
@@ -305,327 +313,82 @@ const Dashboard = () => {
 
   return (
     <div>
-      {/* Top Bar */}
-      <div className="top-bar">
-        <input
-          type="text"
-          className="search-bar"
-          placeholder="Search books..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onFocus={() => setIsSearchFocused(true)}
-          onBlur={() => setTimeout(() => setIsSearchFocused(false), 150)}
-        />
-        <button className="settings-button">⚙️</button>
-        <button className="logout-button" onClick={handleLogout}>Logout</button>
-        {isSearchFocused && searchResults.length > 0 && (
-          <div className="search-results">
-            {searchResults.map((result) => (
-              <div key={result.id} className="search-result" onClick={() => openBookShowPopup(result)}>
-                <b>{result.title}</b> by {result.author}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <TopBar
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        searchResults={searchResults}
+        openBookShowPopup={openBookShowPopup}
+        handleLogout={handleLogout}
+      />
 
-      {/* Bottom Wrapper */}
       <div className="bottom-wrapper">
-        {/* Side Panel */}
-        <div className="side-panel">
-          {shelfGroups.map((group) => (
-            <div key={group.id} className="shelf-group-wrapper">
-              <div className="shelf-group-tile">{group.name}</div>
-              <div className="self-group-shelves">
-                {(shelvesByGroup[group.id] || []).map((shelf) => (
-                  <div
-                    key={shelf.id}
-                    className="shelf-option"
-                    onClick={() => { setSelectedShelfId(shelf.id); setAddShelfPopupVisible(false); setSelectedShelf(shelf) }}
-                  >
-                    {shelf.name}
-                  </div>
-                ))}
-                <div
-                  className="add-shelf-option"
-                  onClick={() => {
-                    setNewShelfData((prev) => ({ ...prev, shelfGroupId: group.id }));
-                    setAddShelfPopupVisible(true);
-                  }}
-                >
-                  ➕ Add Shelf
-                </div>
-              </div>
-            </div>
-          ))}
-          <div
-            className="shelf-group-tile-add"
-            onClick={() => setAddShelfGroupPopupVisible(true)}
-          >
-            ➕ Add Shelf Group
-          </div>
-        </div>
+        <SidePanel
+          shelfGroups={shelfGroups}
+          shelvesByGroup={shelvesByGroup}
+          setSelectedShelfId={setSelectedShelfId}
+          setSelectedShelf={setSelectedShelf}
+          setAddShelfPopupVisible={setAddShelfPopupVisible}
+          setAddShelfGroupPopupVisible={setAddShelfGroupPopupVisible}
+          setNewShelfData={setNewShelfData}
+        />
 
-        {/* Main Content */}
-        {!isEditBookPopupVisible &&!isBookShowPopupVisible && !isAddBookPopupVisible && !isAddShelfPopupVisible && !isAddShelfGroupPopupVisible && (
-          <div className="main-content">
-            <div className="books-grid">
-              {books.map((book) => (
-                <div key={book.id} className="book-tile" onClick={() => openBookShowPopup(book)} onContextMenu={(event) => handleRightClick(event, book)}>
-                  <h3>{book.title}</h3>
-                  <p>{book.author}</p>
-                  <div>
-                    {book.tags.map((tag, index) => (
-                      <span key={index} className="book-tag">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-              <div className="book-tile-add" onClick={() => setAddBookPopupVisible(true)}>
-                ➕ Add Book
-              </div>
-            </div>
-          </div>
-        )}
+        {!isEditBookPopupVisible && !isBookShowPopupVisible && !isAddBookPopupVisible && !isAddShelfPopupVisible && !isAddShelfGroupPopupVisible &&
+          <MainContent
+            books={books}
+            openBookShowPopup={openBookShowPopup}
+            handleRightClick={handleRightClick}
+            setAddBookPopupVisible={setAddBookPopupVisible}
+          />}
 
-        {/* Book Show Popup */}
-        {isBookShowPopupVisible && selectedBook && (
-          <div className="book-show-popup">
-            <div className="info-wrapper">
-              <div className="title">{selectedBook.title}</div>
-              <div className="author">{selectedBook.author}</div>
-              <div className="description">{selectedBook.description}</div>
-            </div>
 
-            {/* Table to represent shelf */}
-            <div className="table-container">
-              <table>
-                <tbody>
-                  {/* Dynamically generate rows */}
-                  {Array.from({ length: selectedShelf.y }).map((_, rowIndex) => (
-                    <tr key={rowIndex}>
-                      {/* Dynamically generate columns */}
-                      {Array.from({ length: selectedShelf.x }).map((_, colIndex) => (
-                        <td
-                          key={colIndex}
-                          className={
-                            rowIndex === selectedBook.y - 1 && colIndex === selectedBook.x - 1
-                              ? "selected-shelf-rectangle"
-                              : ""
-                          }
-                        ></td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Close button */}
-            <div className="close" onClick={closeBookShowPopup}>✖</div>
-          </div>
-        )}
-
-        {/* Add Book Popup */}
+        {/* Popups */}
         {isAddBookPopupVisible && (
-          <form className="add-book-popup" onSubmit={handleAddBookSubmit}>
-            <label>
-              Title:
-              <input
-                type="text"
-                name="title"
-                onChange={(e) =>
-                  setNewBookData({ ...newBookData, title: e.target.value })
-                }
-                required
-              />
-            </label>
-            <label>
-              Author:
-              <input
-                type="text"
-                name="author"
-                onChange={(e) =>
-                  setNewBookData({ ...newBookData, author: e.target.value })
-                }
-                required
-              />
-            </label>
-            <label>
-              Tags:
-              <input
-                type="text"
-                name="tags"
-                onChange={(e) =>
-                  setNewBookData({ ...newBookData, tags: e.target.value })
-                }
-              />
-            </label>
-            <label>
-              Position X:
-              <input
-                type="number"
-                name="x"
-                onChange={(e) =>
-                  setNewBookData({ ...newBookData, x: e.target.value })
-                }
-                required
-              />
-            </label>
-            <label>
-              Position Y:
-              <input
-                type="number"
-                name="y"
-                onChange={(e) =>
-                  setNewBookData({ ...newBookData, y: e.target.value })
-                }
-                required
-              />
-            </label>
-            <button type="submit">Add Book</button>
-            <button
-              type="button"
-              onClick={() => setAddBookPopupVisible(false)}
-            >
-              Cancel
-            </button>
-          </form>
+          <AddBookPopup
+            newBookData={newBookData}
+            setNewBookData={setNewBookData}
+            handleAddBookSubmit={handleAddBookSubmit}
+            setAddBookPopupVisible={setAddBookPopupVisible}
+          />
         )}
-
-        {/* Add Shelf Popup */}
-        {isAddShelfPopupVisible && (
-          <form className="add-shelf-popup" onSubmit={handleAddShelfSubmit}>
-            <label>
-              Shelf Name:
-              <input
-                type="text"
-                name="name"
-                onChange={(e) => setNewShelfData({ ...newShelfData, name: e.target.value })}
-                required
-              />
-            </label>
-            <label>
-              Columns
-              <input
-                type="number"
-                name="x"
-                onChange={(e) => setNewShelfData({ ...newShelfData, x: e.target.value })}
-                required
-              />
-            </label>
-            <label>
-              Rows:
-              <input
-                type="number"
-                name="y"
-                onChange={(e) => setNewShelfData({ ...newShelfData, y: e.target.value })}
-                required
-              />
-            </label>
-            <button type="submit">Add Shelf</button>
-            <button type="button" onClick={() => setAddShelfPopupVisible(false)}>Cancel</button>
-          </form>
+        {isBookShowPopupVisible && selectedBook && (
+          <BookShowPopup
+            selectedBook={selectedBook}
+            selectedShelf={selectedShelf}
+            closeBookShowPopup={closeBookShowPopup}
+          />
         )}
-
-        {/* Add Shelf Group Popup */}
         {isAddShelfGroupPopupVisible && (
-          <form className="add-shelf-group-popup" onSubmit={handleAddShelfGroupSubmit}>
-            <label>
-              Shelf Group Name:
-              <input
-                type="text"
-                name="name"
-                onChange={(e) => setNewShelfGroupData({ ...newShelfGroupData, name: e.target.value })}
-                required
-              />
-            </label>
-            <button type="submit">Add Shelf Group</button>
-            <button type="button" onClick={() => setAddShelfGroupPopupVisible(false)}>Cancel</button>
-          </form>
+          <AddShelfGroupPopup
+            newShelfGroupData={newShelfGroupData}
+            setNewShelfGroupData={setNewShelfGroupData}
+            handleAddShelfGroupSubmit={handleAddShelfGroupSubmit}
+            setAddShelfGroupPopupVisible={setAddShelfGroupPopupVisible}
+          />
         )}
-      {/* Add Book/Edit Book Popup*/}
-      {isEditBookPopupVisible && (
-        <form
-          className="add-book-popup"
-          onSubmit={isEditBookPopupVisible ? handleEditBookSubmit : handleAddBookSubmit}
-        >
-          <label>
-            Title:
-            <input
-              type="text"
-              name="title"
-              value={newBookData.title}
-              onChange={(e) => setNewBookData({ ...newBookData, title: e.target.value })}
-              required
-            />
-          </label>
-          <label>
-            Author:
-            <input
-              type="text"
-              name="author"
-              value={newBookData.author}
-              onChange={(e) => setNewBookData({ ...newBookData, author: e.target.value })}
-              required
-            />
-          </label>
-          <label>
-            Tags:
-            <input
-              type="text"
-              name="tags"
-              value={newBookData.tags}
-              onChange={(e) => setNewBookData({ ...newBookData, tags: e.target.value })}
-            />
-          </label>
-          <label>
-            Position X:
-            <input
-              type="number"
-              name="x"
-              value={newBookData.x}
-              onChange={(e) => setNewBookData({ ...newBookData, x: e.target.value })}
-              required
-            />
-          </label>
-          <label>
-            Position Y:
-            <input
-              type="number"
-              name="y"
-              value={newBookData.y}
-              onChange={(e) => setNewBookData({ ...newBookData, y: e.target.value })}
-              required
-            />
-          </label>
-          <button type="submit">{isEditBookPopupVisible ? "Save Changes" : "Add Book"}</button>
-          <button
-            type="button"
-            onClick={() =>
-              isEditBookPopupVisible ? setEditBookPopupVisible(false) : setAddBookPopupVisible(false)
-            }
-          >
-            Cancel
-          </button>
-        </form>
-      )}
+        {isEditBookPopupVisible && (
+          <EditBookPopup
+            newBookData={newBookData}
+            setNewBookData={setNewBookData}
+            handleEditBookSubmit={handleEditBookSubmit}
+            setEditBookPopupVisible={setEditBookPopupVisible}
+          />
+        )}
+        {isAddShelfPopupVisible && (
+          <AddShelfPopup
+            newShelfData={newShelfData}
+            setNewShelfData={setNewShelfData}
+            handleAddShelfSubmit={handleAddShelfSubmit}
+            setAddShelfPopupVisible={setAddShelfPopupVisible}
+          />
+        )}
       </div>
-      {/* Right-Click Menu */}
-      {isRightClickMenuVisible && (
-        <div
-          className="right-click-menu"
-          style={{
-            position: "absolute",
-            top: rightClickMenuPosition.y,
-            left: rightClickMenuPosition.x,
-          }}
-        >
-          <div className="option" onClick={() => openBookShowPopup(rightClickedBook)}>Open</div>
-          <div className="option" onClick={() => {openEditBookPopup(rightClickedBook);console.log("noe")}}>Edit</div>
-          <div className="option" onClick={() => handleDeleteBook(rightClickedBook.id)}>Delete</div>
-        </div>
-      )}
+      <RightClickMenu
+          isVisible={isRightClickMenuVisible}
+          position={rightClickMenuPosition}
+          onOpen={() => openBookShowPopup(rightClickedBook)}
+          onEdit={() => openEditBookPopup(rightClickedBook)}
+          onDelete={() => handleDeleteBook(rightClickedBook.id)}
+        />
     </div >
   );
 };
