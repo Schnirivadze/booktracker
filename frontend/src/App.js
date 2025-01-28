@@ -8,18 +8,18 @@ import Register from './components/Auth/Register';
 import './styles/App.css';
 
 function App() {
-  console.log("App component loaded.");
-  return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
-  );
+	console.log("App component loaded.");
+	return (
+		<AuthProvider>
+			<Router>
+				<Routes>
+					<Route path="/" element={<Login />} />
+					<Route path="/register" element={<Register />} />
+					<Route path="/dashboard" element={<Dashboard />} />
+				</Routes>
+			</Router>
+		</AuthProvider>
+	);
 }
 
 export default App;
