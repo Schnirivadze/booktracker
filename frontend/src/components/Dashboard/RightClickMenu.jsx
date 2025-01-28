@@ -1,13 +1,11 @@
 import React from "react";
 
 const RightClickMenu = ({
-  isVisible,
   position,
   onOpen,
   onEdit,
   onDelete,
 }) => {
-  if (!isVisible) return null;
 
   return (
     <div

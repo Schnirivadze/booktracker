@@ -281,13 +281,12 @@ const Dashboard = () => {
           />
         )}
       </div>
-      <RightClickMenu
-        isVisible={isRightClickMenuVisible}
+      {isRightClickMenuVisible && (<RightClickMenu
         position={rightClickMenuPosition}
         onOpen={() => openBookShowPopup(rightClickedBook)}
         onEdit={() => openEditBookPopup(rightClickedBook)}
         onDelete={() => handleDeleteBook(rightClickedBook.id)}
-      />
+      />)}
     </div >
   );
 };
