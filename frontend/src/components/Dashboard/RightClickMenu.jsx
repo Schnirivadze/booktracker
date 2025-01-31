@@ -5,22 +5,32 @@ const RightClickMenu = ({
 	onOpen,
 	onEdit,
 	onDelete,
+	rightClickedBook,
+	selectedShelf,
+	newShelfGroupData
 }) => {
-
 	return (
-		<div
-			className="right-click-menu"
-			style={{
-				position: "absolute",
-				top: position.y,
-				left: position.x,
-			}}
-		>
-			<div className="option" onClick={onOpen}>Open</div>
-			<div className="option" onClick={onEdit}>Edit</div>
-			<div className="option" onClick={onDelete}>Delete</div>
+		<div className="right-click-menu" style={{ top: position.y, left: position.x }}>
+			{rightClickedBook && (
+				<>
+					<div className="option" onClick={onOpen}>View Book</div>
+					<div className="option" onClick={onEdit}>Edit Book</div>
+					<div className="option" onClick={onDelete}>Delete Book</div>
+				</>
+			)}
+			{selectedShelf && (
+				<>
+					<div className="option" onClick={onEdit}>Edit Shelf</div>
+					<div className="option" onClick={onDelete}>Delete Shelf</div>
+				</>
+			)}
+			{newShelfGroupData && (
+				<>
+					<div className="option" onClick={onEdit}>Edit Shelf Group</div>
+					<div className="option" onClick={onDelete}>Delete Shelf Group</div>
+				</>
+			)}
 		</div>
 	);
 };
-
 export default RightClickMenu;

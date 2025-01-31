@@ -8,12 +8,13 @@ const SidePanel = ({
 	setAddShelfPopupVisible,
 	setAddShelfGroupPopupVisible,
 	setNewShelfData,
+	handleRightClick
 }) => {
 	return (
 		<div className="side-panel">
 			{shelfGroups.map((group) => (
 				<div key={group.id} className="shelf-group-wrapper">
-					<div className="shelf-group-tile">{group.name}</div>
+					<div className="shelf-group-tile" onContextMenu={(event) => handleRightClick(event, group, "shelfGroup")}>{group.name}</div>
 					<div className="self-group-shelves">
 						{(shelvesByGroup[group.id] || []).map((shelf) => (
 							<div
@@ -23,6 +24,7 @@ const SidePanel = ({
 									setSelectedShelfId(shelf.id);
 									setSelectedShelf(shelf);
 								}}
+								onContextMenu={(event) => handleRightClick(event, shelf, "shelf")}
 							>
 								{shelf.name}
 							</div>

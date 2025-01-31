@@ -15,7 +15,7 @@ const MainContent = ({
 						key={book.id}
 						className="book-tile"
 						onClick={() => openBookShowPopup(book)}
-						onContextMenu={(event) => handleRightClick(event, book)}
+						onContextMenu={(event) => handleRightClick(event, book, "book")}
 					>
 						<h3>{book.title}</h3>
 						<p>{book.author}</p>

@@ -1,8 +1,10 @@
 import { useState } from "react";
 
 const useDashboardState = () => {
-	// UI State for popups visibility
+	// UI State for popups visibility 
 	const [isEditBookPopupVisible, setEditBookPopupVisible] = useState(false);
+	const [isEditShelfPopupVisible, setEditShelfPopupVisible] = useState(false);
+	const [isEditShelfGroupPopupVisible, setEditShelfGroupPopupVisible] = useState(false);
 	const [isAddBookPopupVisible, setAddBookPopupVisible] = useState(false);
 	const [isAddShelfPopupVisible, setAddShelfPopupVisible] = useState(false);
 	const [isAddShelfGroupPopupVisible, setAddShelfGroupPopupVisible] = useState(false);
@@ -38,12 +40,16 @@ const useDashboardState = () => {
 		// Popup visibility
 		isEditBookPopupVisible,
 		setEditBookPopupVisible,
+		isEditShelfPopupVisible,
+		setEditShelfPopupVisible,
 		isAddBookPopupVisible,
 		setAddBookPopupVisible,
 		isAddShelfPopupVisible,
 		setAddShelfPopupVisible,
 		isAddShelfGroupPopupVisible,
 		setAddShelfGroupPopupVisible,
+		isEditShelfGroupPopupVisible,
+		setEditShelfGroupPopupVisible,
 		isBookShowPopupVisible,
 		setBookShowPopupVisible,
 		isRightClickMenuVisible,

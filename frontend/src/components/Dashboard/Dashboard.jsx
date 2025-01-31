@@ -6,8 +6,10 @@ import SidePanel from "./SidePanel";
 import MainContent from "./MainContent";
 import AddBookPopup from "./Popups/AddBookPopup";
 import EditBookPopup from "./Popups/EditBookPopup";
+import EditShelfPopup from "./Popups/EditShelfPopup";
 import AddShelfPopup from "./Popups/AddShelfPopup";
 import AddShelfGroupPopup from "./Popups/AddShelfGroupPopup";
+import EditShelfGroupPopup from "./Popups/EditShelfGroupPopup";
 import BookShowPopup from "./Popups/BookShowPopup";
 import RightClickMenu from "./RightClickMenu";
 
@@ -27,12 +29,16 @@ const Dashboard = () => {
 	const {
 		isEditBookPopupVisible,
 		setEditBookPopupVisible,
+		isEditShelfPopupVisible,
+		setEditShelfPopupVisible,
 		isAddBookPopupVisible,
 		setAddBookPopupVisible,
 		isAddShelfPopupVisible,
 		setAddShelfPopupVisible,
 		isAddShelfGroupPopupVisible,
 		setAddShelfGroupPopupVisible,
+		isEditShelfGroupPopupVisible,
+		setEditShelfGroupPopupVisible,
 		isBookShowPopupVisible,
 		setBookShowPopupVisible,
 		isRightClickMenuVisible,
@@ -71,23 +77,30 @@ const Dashboard = () => {
 		bookToEdit,
 		token,
 	});
-	const { handleAddShelfSubmit } = useShelfHandlers({
+	const { handleAddShelfSubmit, handleEditShelfSubmit , handleDeleteShelf} = useShelfHandlers({
 		token,
 		newShelfData,
 		setShelvesByGroup,
-		setAddShelfPopupVisible
+		setAddShelfPopupVisible,
+		setEditShelfPopupVisible
 	});
-	const { handleAddShelfGroupSubmit } = useShelfGroupHandlers({
+	const {handleAddShelfGroupSubmit, handleEditShelfGroupSubmit, handleDeleteShelfGroup} = useShelfGroupHandlers({
 		token,
 		newShelfGroupData,
 		setShelfGroups,
-		setAddShelfGroupPopupVisible
+		setAddShelfGroupPopupVisible,
+		setEditShelfGroupPopupVisible
 	});
-	const handleRightClick = (event, book) => {
+	const handleRightClick = (event, item, type) => {
 		event.preventDefault();
 		setRightClickMenuPosition({ x: event.pageX, y: event.pageY });
 		setRightClickMenuVisible(true);
-		setRightClickedBook(book);
+
+		// Store the right-clicked item and its type
+		setRightClickedBook(type === "book" ? item : null);
+		setSelectedShelf(type === "shelf" ? item : null);
+		setSelectedShelfId(type === "shelf" ? item.id : null);
+		setNewShelfGroupData(type === "shelfGroup" ? item : null);
 	};
 
 	// Open Edit Book Popup
@@ -113,6 +126,17 @@ const Dashboard = () => {
 		setSelectedBook(null);
 	};
 
+
+	// Open Edit Shelf Popup
+	const openEditShelfPopup = (shelf) => {
+		setNewShelfData(shelf);
+		setEditShelfPopupVisible(true);
+	};
+	// Open Edit ShelfGroups Popup
+	const openEditShelfGroupsPopup = (shelfGroup) => {
+		setNewShelfGroupData(shelfGroup);
+		setEditShelfGroupPopupVisible(true);
+	};
 	// Attach a global click listener to hide the context menu
 	useEffect(() => {
 		document.addEventListener("click", () => { setRightClickMenuVisible(false); });
@@ -229,9 +253,10 @@ const Dashboard = () => {
 					setAddShelfPopupVisible={setAddShelfPopupVisible}
 					setAddShelfGroupPopupVisible={setAddShelfGroupPopupVisible}
 					setNewShelfData={setNewShelfData}
+					handleRightClick={handleRightClick}
 				/>
 
-				{!isEditBookPopupVisible && !isBookShowPopupVisible && !isAddBookPopupVisible && !isAddShelfPopupVisible && !isAddShelfGroupPopupVisible &&
+				{!isEditShelfGroupPopupVisible && !isEditShelfPopupVisible && !isEditBookPopupVisible && !isBookShowPopupVisible && !isAddBookPopupVisible && !isAddShelfPopupVisible && !isAddShelfGroupPopupVisible &&
 					<MainContent
 						books={books}
 						openBookShowPopup={openBookShowPopup}
@@ -280,13 +305,42 @@ const Dashboard = () => {
 						setAddShelfPopupVisible={setAddShelfPopupVisible}
 					/>
 				)}
+				{isEditShelfPopupVisible && (
+					<EditShelfPopup
+						newShelfData={newShelfData}
+						setNewShelfData={setNewShelfData}
+						handleEditShelfSubmit={handleEditShelfSubmit}
+						setEditShelfPopupVisible={setEditShelfPopupVisible}
+					/>
+				)}
+				{isEditShelfGroupPopupVisible && (
+					<EditShelfGroupPopup
+						newShelfGroupData={newShelfGroupData}
+						setNewShelfGroupData={setNewShelfGroupData}
+						handleEditShelfGroupSubmit={handleEditShelfGroupSubmit}
+						setEditShelfGroupPopupVisible={setEditShelfGroupPopupVisible}
+					/>
+				)}
 			</div>
-			{isRightClickMenuVisible && (<RightClickMenu
-				position={rightClickMenuPosition}
-				onOpen={() => openBookShowPopup(rightClickedBook)}
-				onEdit={() => openEditBookPopup(rightClickedBook)}
-				onDelete={() => handleDeleteBook(rightClickedBook.id)}
-			/>)}
+			{isRightClickMenuVisible && (
+				<RightClickMenu
+					position={rightClickMenuPosition}
+					rightClickedBook={rightClickedBook}
+					selectedShelf={selectedShelf}
+					newShelfGroupData={newShelfGroupData}
+					onOpen={() => rightClickedBook && openBookShowPopup(rightClickedBook)}
+					onEdit={() => {
+						if (rightClickedBook) openEditBookPopup(rightClickedBook);
+						else if (selectedShelf) openEditShelfPopup(selectedShelf);
+						else if (newShelfGroupData) openEditShelfGroupsPopup(newShelfGroupData);
+					}}
+					onDelete={() => {
+						if (rightClickedBook) handleDeleteBook(rightClickedBook.id);
+						else if (selectedShelf) handleDeleteShelf(selectedShelf.id);
+						else if (newShelfGroupData) handleDeleteShelfGroup(newShelfGroupData.id);
+					}}
+				/>
+			)}
 		</div >
 	);
 };
