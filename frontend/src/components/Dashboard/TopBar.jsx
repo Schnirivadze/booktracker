@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../../styles/Dashboard.css";
 
-const TopBar = ({ searchQuery, setSearchQuery, searchResults, openBookShowPopup, handleLogout }) => {
+const TopBar = ({ searchQuery, setSearchQuery, searchResults, openBookShowPopup, handleLogout, setSettingsPopupVisible }) => {
 	const [isSearchFocused, setIsSearchFocused] = useState(false);
 
 	return (
@@ -15,7 +15,9 @@ const TopBar = ({ searchQuery, setSearchQuery, searchResults, openBookShowPopup,
 				onFocus={() => setIsSearchFocused(true)}
 				onBlur={() => setTimeout(() => setIsSearchFocused(false), 150)}
 			/>
-			<button className="settings-button">⚙️</button>
+			<button
+				className="settings-button"
+				onClick={() => setSettingsPopupVisible(true)}>⚙️</button>
 			<button className="logout-button" onClick={handleLogout}>
 				Logout
 			</button>

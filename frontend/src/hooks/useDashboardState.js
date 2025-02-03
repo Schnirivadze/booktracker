@@ -10,6 +10,7 @@ const useDashboardState = () => {
 	const [isAddShelfGroupPopupVisible, setAddShelfGroupPopupVisible] = useState(false);
 	const [isBookShowPopupVisible, setBookShowPopupVisible] = useState(false);
 	const [isRightClickMenuVisible, setRightClickMenuVisible] = useState(false);
+	const [isSettingsPopupVisible, setSettingsPopupVisible] = useState(false);
 
 	// UI State for selected items and data
 	const [bookToEdit, setBookToEdit] = useState(null);
@@ -38,6 +39,8 @@ const useDashboardState = () => {
 
 	return {
 		// Popup visibility
+		isSettingsPopupVisible,
+		setSettingsPopupVisible,
 		isEditBookPopupVisible,
 		setEditBookPopupVisible,
 		isEditShelfPopupVisible,

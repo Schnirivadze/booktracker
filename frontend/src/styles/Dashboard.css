@@ -346,3 +346,39 @@ td {
 .right-click-menu .option:last-child:hover {
 	background-color: #f45325;
 }
+
+.settings-popup {
+	width: calc(85% - 2em);
+	display: flex;
+	flex-direction: column;
+	border-radius: 15px;
+	font-size: 2em;
+	gap: 1vh;
+	align-items: center;
+	justify-content: center;
+	background-color: white;
+	padding: 1em;
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+}
+
+.settings-popup b {
+	font-size: 2em;
+}
+
+.settings-popup label {
+	width: 25vw;
+	display: flex;
+	justify-content: space-between;
+}
+
+.settings-popup input {
+	width: 15vw;
+	border-radius: 10px;
+	border: lightgray 1px solid;
+	padding-left: 1em;
+}
+
+.settings-popup button {
+	width: 20vw;
+	height: 2.5vh;
+}

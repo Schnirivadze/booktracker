@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 
 import TopBar from "./TopBar";
@@ -11,22 +12,28 @@ import AddShelfPopup from "./Popups/AddShelfPopup";
 import AddShelfGroupPopup from "./Popups/AddShelfGroupPopup";
 import EditShelfGroupPopup from "./Popups/EditShelfGroupPopup";
 import BookShowPopup from "./Popups/BookShowPopup";
+import SettingsPopup from "./Popups/SettingsPopup";
 import RightClickMenu from "./RightClickMenu";
 
 import useDashboardState from "../../hooks/useDashboardState";
 import { useBookHandlers } from "../../hooks/useBookHandlers";
 import { useShelfHandlers } from "../../hooks/useShelfHandlers";
 import { useShelfGroupHandlers } from "../../hooks/useShelfGroupHandlers";
+import { useUserHandlers } from "../../hooks/useUserHandlers";
 
 import '../../styles/Dashboard.css';
 
 const Dashboard = () => {
-	const { token, user, handleLogout } = useContext(AuthContext);
+	const navigate = useNavigate();
+	const { token, user, setUser, handleLogout } = useContext(AuthContext);
+	const [newUserData, setNewUserData] = useState(user || {});
 	const [shelfGroups, setShelfGroups] = useState([]);
 	const [shelvesByGroup, setShelvesByGroup] = useState({});
 	const [books, setBooks] = useState([]);
 	const controllerRef = React.useRef(null);
 	const {
+		isSettingsPopupVisible,
+		setSettingsPopupVisible,
 		isEditBookPopupVisible,
 		setEditBookPopupVisible,
 		isEditShelfPopupVisible,
@@ -77,19 +84,28 @@ const Dashboard = () => {
 		bookToEdit,
 		token,
 	});
-	const { handleAddShelfSubmit, handleEditShelfSubmit , handleDeleteShelf} = useShelfHandlers({
+	const { handleAddShelfSubmit, handleEditShelfSubmit, handleDeleteShelf } = useShelfHandlers({
 		token,
 		newShelfData,
 		setShelvesByGroup,
 		setAddShelfPopupVisible,
 		setEditShelfPopupVisible
 	});
-	const {handleAddShelfGroupSubmit, handleEditShelfGroupSubmit, handleDeleteShelfGroup} = useShelfGroupHandlers({
+	const { handleAddShelfGroupSubmit, handleEditShelfGroupSubmit, handleDeleteShelfGroup } = useShelfGroupHandlers({
 		token,
 		newShelfGroupData,
 		setShelfGroups,
 		setAddShelfGroupPopupVisible,
 		setEditShelfGroupPopupVisible
+	});
+
+	const { handleEditUserSubmit } = useUserHandlers({
+		token,
+		user,
+		newUserData,
+		setUser,
+		setSettingsPopupVisible,
+		navigate
 	});
 	const handleRightClick = (event, item, type) => {
 		event.preventDefault();
@@ -242,6 +258,7 @@ const Dashboard = () => {
 				searchResults={searchResults}
 				openBookShowPopup={openBookShowPopup}
 				handleLogout={handleLogout}
+				setSettingsPopupVisible={setSettingsPopupVisible}
 			/>
 
 			<div className="bottom-wrapper">
@@ -256,7 +273,7 @@ const Dashboard = () => {
 					handleRightClick={handleRightClick}
 				/>
 
-				{!isEditShelfGroupPopupVisible && !isEditShelfPopupVisible && !isEditBookPopupVisible && !isBookShowPopupVisible && !isAddBookPopupVisible && !isAddShelfPopupVisible && !isAddShelfGroupPopupVisible &&
+				{!isSettingsPopupVisible && !isEditShelfGroupPopupVisible && !isEditShelfPopupVisible && !isEditBookPopupVisible && !isBookShowPopupVisible && !isAddBookPopupVisible && !isAddShelfPopupVisible && !isAddShelfGroupPopupVisible &&
 					<MainContent
 						books={books}
 						openBookShowPopup={openBookShowPopup}
@@ -319,6 +336,14 @@ const Dashboard = () => {
 						setNewShelfGroupData={setNewShelfGroupData}
 						handleEditShelfGroupSubmit={handleEditShelfGroupSubmit}
 						setEditShelfGroupPopupVisible={setEditShelfGroupPopupVisible}
+					/>
+				)}
+				{isSettingsPopupVisible && (
+					<SettingsPopup
+						userData={user}
+						setNewUserData={setNewUserData}
+						handleEditUserSubmit={handleEditUserSubmit}
+						setSettingsPopupVisible={setSettingsPopupVisible}
 					/>
 				)}
 			</div>

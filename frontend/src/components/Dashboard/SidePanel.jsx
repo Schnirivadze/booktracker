@@ -21,6 +21,7 @@ const SidePanel = ({
 								key={shelf.id}
 								className="shelf-option"
 								onClick={() => {
+									console.log(shelf.id);
 									setSelectedShelfId(shelf.id);
 									setSelectedShelf(shelf);
 								}}
